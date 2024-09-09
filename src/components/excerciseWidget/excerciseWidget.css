@@ -1,0 +1,46 @@
+.excercise-widget-container {
+  width: 100%;
+  height: auto;
+  background-color: #111111;
+  border: 3px solid rgba(255, 255, 255, 0.11);
+  border-radius: 25px;
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+.title-container {
+  color: white;
+  font-size: 28px;
+}
+.excercise-details {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  opacity: 0.8;
+  font-size: 20px;
+  line-height: 115%;
+  padding-bottom: 20px;
+  border-bottom: 1px solid gray;
+}
+
+.description-details {
+  color: white;
+  font-size: 24px;
+  padding-top: 20px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  padding-top: 20px;
+}
+
+.buttons > button {
+  background-color: #4365de;
+  padding: 8px 20px;
+  font-size: 16px;
+  color: white;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+}

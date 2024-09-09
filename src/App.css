@@ -1,38 +1,235 @@
-.App {
-  text-align: center;
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  padding: 75px;
+  box-sizing: border-box;
+  background-image: linear-gradient(
+    to right top,
+    #d16ba5,
+    #c777b9,
+    #ba83ca,
+    #aa8fd8,
+    #9a9ae1,
+    #8aa7ec,
+    #79b3f4,
+    #69bff8,
+    #52cffe,
+    #41dfff,
+    #46eefa,
+    #5ffbf1
+  );
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.app-container {
+  display: grid;
+  grid-template-columns: 3fr 3.5fr;
+  gap: 40px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.excercise-list-widget,
+.workout-widget {
+  /* From https://css.glass */
+  background: rgba(17, 17, 17, 0.93);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(9.1px);
+  -webkit-backdrop-filter: blur(9.1px);
+  border: 1px solid rgba(17, 17, 17, 1);
+  border-radius: 32px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.excercise-list-widget {
+  display: grid;
+  overflow: hidden;
+  grid-template-rows: 100px auto;
+}
+
+.input-field {
+  display: flex;
+  justify-content: stretch;
+  align-items: center;
+  padding: 0px 40px;
+}
+
+#muscle-input {
+  width: 100%;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 4px solid #4365de;
+  font-size: 24px;
+  color: #4365de;
+  outline: none;
+}
+
+.excercise-list {
+  padding: 20px 40px;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
+  gap: 30px;
+}
+
+.workout-widget {
+  display: grid;
+  grid-template-rows: 100px auto 150px;
+  overflow-y: hidden;
+}
+
+.workout-planning {
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  padding: 0px 40px;
+  padding-top: 20px;
+  box-sizing: border-box;
+  gap: 30px;
+  max-height: 100%;
+  overflow-x: hidden;
+}
+
+#search-btn {
+  background-color: #4365de;
+  font-size: 20px;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.date-selection {
+  padding: 0px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.date-selection > h3 {
+  color: #4365de;
+  font-size: 32px;
+}
+
+.date-selection > button {
+  color: #4365de;
+  font-size: 60px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.workout-buttons {
+  display: flex;
+  padding: 0px 40px;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.workout-buttons > button {
+  background-color: #4365de;
+  padding: 20px 50px;
+  border-radius: 100px;
+  border: none;
   color: white;
+  font-size: 24px;
+  transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
-.App-link {
-  color: #61dafb;
+.workout-buttons > button:hover {
+  transform: translateY(-5px);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.workout-adder {
+  background-color: #111111;
+  width: 1000px;
+  height: 500px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 32px;
+  display: grid;
+  grid-template-rows: 100px auto 80px;
+}
+
+.name-input {
+  display: flex;
+  padding: 0px 40px;
+  align-items: center;
+}
+
+#excercise-name-input {
+  width: 100%;
+  height: 50px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 4px solid #4365de;
+  font-size: 24px;
+  color: #4365de;
+  outline: none;
+}
+
+.details {
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: 1fr 1fr;
+  padding: 0px 40px;
+  gap: 20px;
+}
+
+.time-choose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#time-input {
+  width: 100%;
+  height: 60%;
+  font-size: 180px;
+  text-align: center;
+  color: #4365de;
+  font-weight: 700;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.time-choose > h3 {
+  color: #4365de;
+  font-size: 32px;
+}
+
+.finish {
+  padding: 20px;
+  display: grid;
+  box-sizing: border-box;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.finish > button {
+  border-radius: 10px;
+  background-color: #4365de;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+}
+
+.choose-point {
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  cursor: pointer;
+  border: none;
+}
+
+.color-choose {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
 }

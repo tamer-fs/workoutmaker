@@ -1,0 +1,79 @@
+.workout-widget-container {
+  width: 100%;
+  height: auto;
+  border-radius: 25px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.data-container > h3 {
+  font-size: 28px;
+  color: white;
+  opacity: 0.8;
+}
+
+.data-container > h2 {
+  font-size: 32px;
+  color: white;
+}
+
+.data-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 15px;
+}
+
+.buttons-container {
+  display: flex;
+  padding-top: 15px;
+  gap: 10px;
+  justify-content: space-between;
+  border-top: 2px solid rgba(255, 255, 255, 0.452);
+}
+
+.x-btn,
+.up-btn,
+.down-btn {
+  color: white;
+  font-size: 25px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.down-btn:hover {
+  opacity: 0.8;
+}
+
+.up-btn:hover {
+  opacity: 0.8;
+}
+
+.x-btn:hover {
+  opacity: 0.8;
+}
+
+.x-btn {
+  color: white;
+  font-size: 25px;
+}
+
+.down-btn {
+  padding-right: 20px;
+}
+
+.down-btn {
+}
+
+#order-input {
+  background: none;
+  color: white;
+  font-size: 25px;
+  width: 50px;
+  text-align: center;
+  margin-right: 10px;
+  outline: none;
+  border: 1px solid rgba(255, 255, 255, 0.507);
+  border-radius: 25px;
+}
