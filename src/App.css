@@ -233,3 +233,36 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
 }
+
+@media screen and (max-width: 1625px) {
+  .date-selection {
+    padding: 0px 30px;
+  }
+  .input-field {
+    padding: 0px 30px;
+  }
+  #muscle-input {
+    font-size: 18px;
+  }
+  .date-selection > h3 {
+    font-size: 22px;
+  }
+  .workout-buttons > button {
+    padding: 10px 20px;
+    font-size: 15px;
+  }
+  .workout-widget {
+    grid-template-rows: 100px auto 100px;
+  }
+  .app-container {
+    padding: 25px;
+    gap: 20px;
+  }
+  .workout-planning {
+    padding: 30px;
+    padding-bottom: 0px;
+  }
+  .excercise-list {
+    padding: 30px;
+  }
+}

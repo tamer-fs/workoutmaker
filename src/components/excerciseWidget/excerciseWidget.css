@@ -44,3 +44,23 @@
   border: none;
   cursor: pointer;
 }
+
+@media screen and (max-width: 1625px) {
+  .excercise-widget-container .title-container > h2 {
+    font-size: 32px;
+  }
+  .excercise-widget-container .excercise-details > p {
+    font-size: 15px;
+    line-height: 110%;
+  }
+  .excercise-widget-container .excercise-details {
+    padding-bottom: 10px;
+  }
+  .excercise-widget-container .buttons {
+    padding-top: 10px;
+  }
+  .excercise-widget-container .buttons > button {
+    padding: 5px 15px;
+    font-size: 13px;
+  }
+}
