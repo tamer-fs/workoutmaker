@@ -408,7 +408,7 @@ function App() {
             <button
               id="btn1"
               onClick={() => {
-                setTiming(() => true);
+                setTimingTrue();
                 startTimer();
               }}
             >
