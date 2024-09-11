@@ -289,6 +289,7 @@ function App() {
   const setTimingTrue = () => {
     console.log("d");
     if (timing == false) {
+      console.log("miauw");
       setTiming(true);
       setTimerIndex(Math.random());
     }
