@@ -5,6 +5,8 @@ import ExcerciseWidget from "./components/excerciseWidget/ExcerciseWidget";
 import WorkoutWidget from "./components/workoutWidget/WorkoutWidget";
 import $ from "jquery";
 import audio from "./done.mp3";
+import db from "./firebaseConfig";
+import { onValue, ref, set, update } from "firebase/database";
 
 function App() {
   // refs
@@ -77,6 +79,7 @@ function App() {
   const addExcercise = () => {
     let listCopy = workouts;
     let useList = workouts.filter((obj) => obj.date == workoutDate);
+    let id = Math.round(Math.random() * 10000);
     listCopy.push({
       name: excerciseName,
       duration: excerciseDuration,
@@ -84,13 +87,22 @@ function App() {
       date: workoutDate,
       order: useList.length,
       timed: false,
+      id: id,
     });
     setWorkouts(listCopy);
     console.log(workouts);
     setExcerciseName("");
     setexcerciseDuration(0);
     setExcerciseColor("green");
-    console.log(workouts);
+    set(ref(db, `/${id}`), {
+      name: excerciseName,
+      duration: excerciseDuration,
+      color: excerciseColor,
+      date: workoutDate,
+      order: useList.length,
+      timed: false,
+      id: id,
+    });
   };
 
   const changeWorkouts = (list) => {
@@ -132,6 +144,7 @@ function App() {
 
   const deleteExcerciseFromWorkout = (index) => {
     let listCopy = workouts;
+    set(ref(db, `/${listCopy[index].id}`), {});
     listCopy.splice(index, 1);
     let list = [];
     setWorkouts([]);
@@ -143,6 +156,7 @@ function App() {
         name: element.name,
         order: element.order,
         timed: element.timed,
+        id: element.id,
       });
     });
     setWorkouts(list);
@@ -159,6 +173,7 @@ function App() {
       name: element.name,
       order: order,
       timed: element.timed,
+      id: element.id,
     };
     listCopy[index] = element;
     let list = [];
@@ -171,6 +186,7 @@ function App() {
         name: element.name,
         order: element.order,
         timed: element.timed,
+        id: element.id,
       });
     });
     setWorkouts(list);
@@ -271,6 +287,17 @@ function App() {
     let month = date.getMonth();
     let year = date.getFullYear();
     setWorkoutDate(`Workout: ${day}-${month + 1}-${year}`);
+
+    const dataRef = ref(db, "/");
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      let values;
+      if (data) {
+        values = Object.values(data);
+        setWorkouts(values);
+      }
+    });
+
     getExcerciseData(muscleInput);
     setInterval(() => {
       incTimer();
