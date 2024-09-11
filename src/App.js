@@ -215,7 +215,7 @@ function App() {
   };
 
   const incTimer = () => {
-    setTimer((timer) => timer - 0.5);
+    setTimer((timer) => timer - 1);
   };
 
   const stopTimer = () => {
