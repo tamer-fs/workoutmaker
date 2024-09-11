@@ -290,6 +290,7 @@ function App() {
     console.log("d");
     if (timing == false) {
       setTiming(true);
+      setTimerIndex(Math.random());
     }
   };
 
