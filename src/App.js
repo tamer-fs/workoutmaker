@@ -225,7 +225,6 @@ function App() {
 
   const startTimer = () => {
     setTimerLocation(0);
-    setTiming(true);
 
     let timers = workouts
       .filter((obj) => obj.date == workoutDate)
@@ -273,7 +272,6 @@ function App() {
       });
 
       setTimer(durations[locTimer] * 60);
-      setTiming(true);
 
       console.log(durations[locTimer]);
 
@@ -291,7 +289,6 @@ function App() {
     if (timing == false) {
       console.log("miauw");
       setTiming(true);
-      setTimerIndex(Math.random());
     }
   };
 
