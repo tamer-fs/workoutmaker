@@ -223,6 +223,11 @@ function App() {
     setTimerLocation(0);
   };
 
+  const timeUp = () => {
+    new Audio(audio).play();
+    setTiming((timing) => !timing);
+  };
+
   const startTimer = () => {
     setTimerLocation(0);
 
@@ -242,16 +247,11 @@ function App() {
 
     setTimer(durations[0] * 60);
     setTiming(true);
-
-    for (let i = 0; i < 2; i++) {
-      setTimeout(() => {
-        if (timing) {
-          new Audio(audio).play();
-          setTiming(false);
-        }
-      }, durations[0] * 60 * 1000);
-      i++;
-    }
+    setTimeout(() => {
+      if (timing) {
+        timeUp();
+      }
+    }, durations[0] * 60 * 1000);
   };
 
   const continueTimer = () => {
