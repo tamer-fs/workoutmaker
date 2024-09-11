@@ -285,6 +285,12 @@ function App() {
     }
   };
 
+  const setTimingTrue = () => {
+    if (timing == false) {
+      setTiming((timing) => !timing);
+    }
+  };
+
   // use effects
   useEffect(() => {
     let date = new Date();
