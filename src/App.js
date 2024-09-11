@@ -225,7 +225,12 @@ function App() {
 
   const startTimer = () => {
     setTimerLocation(0);
-    setTimingTrue();
+
+    const timingSet = () => {
+      setTiming(true);
+    };
+
+    timingSet();
 
     let timers = workouts
       .filter((obj) => obj.date == workoutDate)
@@ -240,6 +245,8 @@ function App() {
     timers.forEach((element) => {
       durations.push(parseFloat(element.duration));
     });
+
+    timingSet();
 
     setTimer(durations[0] * 60);
 
