@@ -376,7 +376,7 @@
   grid-template-rows: 1fr 1fr;
 }
 
-@media screen and (max-width: 1625px) {
+@media screen and (max-width: 2000px) {
   .date-selection {
     padding: 0px 30px;
   }

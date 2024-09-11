@@ -45,7 +45,7 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 1625px) {
+@media screen and (max-width: 2000px) {
   .excercise-widget-container .title-container > h2 {
     font-size: 32px;
   }
