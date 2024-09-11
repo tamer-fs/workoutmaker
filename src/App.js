@@ -242,14 +242,14 @@ function App() {
 
     setTimer(durations[0] * 60);
 
-      setTimeout(() => {
-        if (timing) {
-          timeUp();
-          new Audio(audio).play();
-          setTiming(false);
-        }
-      }, durations[0] * 60 * 1000);
-    }
+    console.log(timing);
+
+    setTimeout(() => {
+      if (timing) {
+        new Audio(audio).play();
+        setTiming(false);
+      }
+    }, durations[0] * 60 * 1000);
   };
 
   const continueTimer = () => {
@@ -411,7 +411,6 @@ function App() {
             <button
               id="btn2"
               onClick={() => {
-                setTiming(true);
                 continueTimer();
               }}
             >
