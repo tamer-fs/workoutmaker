@@ -243,12 +243,15 @@ function App() {
     setTimer(durations[0] * 60);
     setTiming(true);
 
-    setTimeout(() => {
-      if (timing) {
-        new Audio(audio).play();
-        setTiming(false);
-      }
-    }, durations[0] * 60 * 1000);
+    for (let i = 0; i < 2; i++) {
+      setTimeout(() => {
+        if (timing) {
+          new Audio(audio).play();
+          setTiming(false);
+        }
+      }, durations[0] * 60 * 1000);
+      i++;
+    }
   };
 
   const continueTimer = () => {
