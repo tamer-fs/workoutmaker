@@ -289,7 +289,7 @@ function App() {
   const setTimingTrue = () => {
     console.log("d");
     if (timing == false) {
-      setTiming((timing) => !timing);
+      setTiming(true);
     }
   };
 
