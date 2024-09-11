@@ -182,7 +182,7 @@
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
   border-radius: 32px;
   display: grid;
-  grid-template-rows: 100px auto 80px;
+  grid-template-rows: 100px auto 100px;
 }
 
 .timer-title {
@@ -249,20 +249,48 @@
 }
 
 .timer-btns > button {
-  width: 30%;
+  width: 23%;
   padding: 5px 25px;
   font-size: 20px;
-  background-color: transparent;
-  border: 1px solid #4365de;
-  color: #4365de;
   border-radius: 50px;
   cursor: pointer;
+  color: white;
 }
 
-.timer-btns > button:hover {
-  background-color: #4365de;
-  border: 1px solid #4365de;
-  color: white;
+#btn1 {
+  background-color: rgba(32, 203, 111, 0.6);
+  border: 4px solid rgba(32, 203, 111);
+}
+
+#btn1:hover {
+  background-color: rgba(32, 203, 111);
+}
+
+#btn2 {
+  background-color: rgba(244, 229, 94, 0.6);
+  border: 4px solid rgb(244, 229, 94);
+}
+
+#btn2:hover {
+  background-color: rgb(244, 229, 94);
+}
+
+#btn3 {
+  background-color: rgba(230, 116, 68, 0.6);
+  border: 4px solid rgb(230, 116, 68);
+}
+
+#btn3:hover {
+  background-color: rgb(230, 116, 68);
+}
+
+#btn4 {
+  background-color: rgba(222, 67, 67, 0.6);
+  border: 4px solid rgba(222, 67, 67);
+}
+
+#btn4:hover {
+  background-color: rgba(222, 67, 67);
 }
 
 .name-input {
