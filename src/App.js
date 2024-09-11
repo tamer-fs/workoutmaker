@@ -225,6 +225,7 @@ function App() {
 
   const startTimer = () => {
     setTimerLocation(0);
+    setTiming(true);
 
     let timers = workouts
       .filter((obj) => obj.date == workoutDate)
