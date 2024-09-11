@@ -223,11 +223,6 @@ function App() {
     setTimerLocation(0);
   };
 
-  const timeUp = () => {
-    new Audio(audio).play();
-    setTiming((timing) => !timing);
-  };
-
   const startTimer = () => {
     setTimerLocation(0);
 
@@ -246,12 +241,15 @@ function App() {
     });
 
     setTimer(durations[0] * 60);
-    setTiming(true);
-    setTimeout(() => {
-      if (timing) {
-        timeUp();
-      }
-    }, durations[0] * 60 * 1000);
+
+      setTimeout(() => {
+        if (timing) {
+          timeUp();
+          new Audio(audio).play();
+          setTiming(false);
+        }
+      }, durations[0] * 60 * 1000);
+    }
   };
 
   const continueTimer = () => {
@@ -404,6 +402,7 @@ function App() {
             <button
               id="btn1"
               onClick={() => {
+                setTiming(true);
                 startTimer();
               }}
             >
@@ -412,6 +411,7 @@ function App() {
             <button
               id="btn2"
               onClick={() => {
+                setTiming(true);
                 continueTimer();
               }}
             >
