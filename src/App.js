@@ -287,8 +287,8 @@ function App() {
   const setTimingTrue = () => {
     console.log("d");
     if (timing == false) {
-      console.log("miauw");
-      setTiming(true);
+      let newVal = true;
+      setTiming(newVal);
     }
   };
 
