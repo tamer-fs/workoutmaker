@@ -402,8 +402,7 @@ function App() {
             <button
               id="btn1"
               onClick={() => {
-                setTiming(true);
-                startTimer();
+                setTiming(true).then(() => startTimer());
               }}
             >
               start
