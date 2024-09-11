@@ -46,7 +46,7 @@
 
 .input-field {
   display: flex;
-  justify-content: stretch;
+  justify-content: flex-end;
   align-items: center;
   padding: 0px 40px;
 }
@@ -124,17 +124,41 @@
   padding: 0px 40px;
   align-items: center;
   justify-content: center;
+  justify-content: space-evenly;
 }
 
 .workout-buttons > button {
   background-color: #4365de;
-  padding: 20px 50px;
+  padding: 20px 20px;
   border-radius: 100px;
   border: none;
   color: white;
-  font-size: 24px;
+  font-size: 22px;
   transition: transform 0.2s ease;
   cursor: pointer;
+  width: 45%;
+}
+
+.search-btn {
+  position: absolute;
+  background: none;
+  color: #4365de;
+  font-size: 16px;
+  padding: 5px 10px;
+  border: 1px solid #4365de;
+  border-radius: 20px;
+  border-bottom-right-radius: 0px;
+  cursor: pointer;
+}
+
+.timer-block > h5 {
+  color: #4365de;
+  font-size: 20px;
+}
+
+.search-btn:hover {
+  background-color: #4365de;
+  color: white;
 }
 
 .workout-buttons > button:hover {
@@ -149,6 +173,96 @@
   border-radius: 32px;
   display: grid;
   grid-template-rows: 100px auto 80px;
+}
+
+.workout-timer-window {
+  background-color: #111111;
+  width: 1000px;
+  height: 500px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  border-radius: 32px;
+  display: grid;
+  grid-template-rows: 100px auto 80px;
+}
+
+.timer-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+}
+
+.excercises-timer {
+  display: flex;
+  padding: 0px 40px;
+  align-items: flex-start;
+  overflow-y: scroll;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.timer-block > h1 {
+  color: #4365de;
+  font-weight: 500;
+}
+
+.timer-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  border: 4px solid #4365de;
+  padding: 10px 20px;
+  border-radius: 25px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+@keyframes myAnim {
+  0%,
+  50%,
+  100% {
+    background-color: #af2929;
+  }
+
+  25%,
+  75% {
+    background-color: #3107079f;
+  }
+}
+
+.timer-on {
+  animation: myAnim 2s ease 0s infinite normal forwards;
+
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 5px solid rgb(56, 56, 56);
+}
+
+.timer-btns {
+  display: flex;
+  padding: 0px 40px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.timer-btns > button {
+  width: 30%;
+  padding: 5px 25px;
+  font-size: 20px;
+  background-color: transparent;
+  border: 1px solid #4365de;
+  color: #4365de;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.timer-btns > button:hover {
+  background-color: #4365de;
+  border: 1px solid #4365de;
+  color: white;
 }
 
 .name-input {
@@ -247,9 +361,13 @@
   .date-selection > h3 {
     font-size: 22px;
   }
+  .workout-buttons {
+    padding: 0px 30px;
+    justify-content: space-around;
+  }
   .workout-buttons > button {
-    padding: 10px 20px;
-    font-size: 15px;
+    padding: 10px 5px;
+    font-size: 12px;
   }
   .workout-widget {
     grid-template-rows: 100px auto 100px;

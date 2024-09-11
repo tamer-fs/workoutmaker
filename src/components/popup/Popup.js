@@ -1,12 +1,13 @@
 import React, { forwardRef, useImperativeHandle } from "react";
 import "./popup.css";
 
-const Popup = forwardRef(({ children }, ref) => {
-  const el = document.getElementById("popup");
-  function makeVisible() {
+const Popup = forwardRef(({ children }, ref, window) => {
+  function makeVisible(window) {
+    const el = document.getElementsByClassName("popup-window")[window];
     el.classList.add("visible");
   }
-  function makeInVisible() {
+  function makeInVisible(window) {
+    const el = document.getElementsByClassName("popup-window")[window];
     el.classList.remove("visible");
   }
 
@@ -17,11 +18,7 @@ const Popup = forwardRef(({ children }, ref) => {
     };
   });
 
-  return (
-    <div id="popup" className="popup-window">
-      {children}
-    </div>
-  );
+  return <div className="popup-window">{children}</div>;
 });
 
 export default Popup;

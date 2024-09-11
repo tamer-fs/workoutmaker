@@ -15,6 +15,7 @@ const WorkoutWidget = forwardRef(
     ref,
     deleteFn,
     changeOrderFn,
+    timed,
   }) => {
     let style = {};
     if (color == "green") {
