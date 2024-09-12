@@ -6,7 +6,7 @@ import WorkoutWidget from "./components/workoutWidget/WorkoutWidget";
 import $ from "jquery";
 import audio from "./done.mp3";
 import db from "./firebaseConfig";
-import { onValue, ref, set, update } from "firebase/database";
+import { get, onValue, ref, set, update } from "firebase/database";
 
 function App() {
   // refs
@@ -47,18 +47,15 @@ function App() {
   const [workouts, setWorkouts] = useState([]);
   const [excercises, setExcercises] = useState([]);
 
-  const [timers, setTimers] = useState([]);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [timerIndex, setTimerIndex] = useState(0);
-  const [timerMax, setTimerMax] = useState(0);
-  const [timerTimers, setTimerTimers] = useState([]);
-  const [maxTimerLocation, setMaxTimerLocation] = useState(0);
   const [timer, setTimer] = useState(0);
-  const [timing, setTiming] = useState(false);
+  const [timing, setTiming] = useState({
+    canTime: false,
+    timingValue: 0,
+    currentlyTiming: 0,
+  });
+  const [timeOut, setTimeOut] = useState(null);
 
   const [timerLocation, setTimerLocation] = useState(0);
-
-  const [currentTimer, setCurrentTimer] = useState();
 
   // functions
   const changeDateIncrement = (inc) => {
@@ -200,104 +197,109 @@ function App() {
     return minutes + " : " + Math.round(extraSeconds);
   };
 
-  const createTimerList = () => {
-    setTimers([]);
-    let list = workouts
-      .filter((obj) => obj.date == workoutDate)
-      .sort((e1, e2) =>
-        e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
-      );
-    list.forEach((obj) => {
-      obj.running = false;
-    });
-    setTimers(list);
-    console.log(timers);
-  };
-
   const incTimer = () => {
     setTimer((timer) => timer - 1);
   };
 
-  const stopTimer = () => {
-    setTiming(false);
-    setTimerLocation(0);
+  const getTimers = (ms) => {
+    let timers = workouts.filter((obj) => obj.date == workoutDate);
+    let list = [];
+    timers.forEach((obj) => {
+      if (ms) {
+        list.push(obj.duration * 60 * 1000);
+      } else {
+        list.push(obj.duration * 60);
+      }
+    });
+
+    return list;
   };
 
   const startTimer = () => {
-    setTimerLocation(0);
+    setTiming((prevState) => ({
+      ...prevState,
+      canTime: true,
+      timingValue: prevState.timingValue,
+      currentlyTiming: 0,
+    }));
+    return;
+  };
 
-    const timingSet = () => {
-      setTiming(true);
-    };
+  const startContinueTimer = () => {
+    setTiming((prevState) => ({
+      ...prevState,
+      canTime: true,
+      timingValue: prevState.timingValue,
+      currentlyTiming: prevState.currentlyTiming,
+    }));
+  };
 
-    timingSet();
+  const stopTimer = () => {
+    setTiming((prevState) => ({
+      ...prevState,
+      canTime: false,
+      timingValue: 0,
+      currentlyTiming: 0,
+    }));
+    return;
+  };
 
-    let timers = workouts
-      .filter((obj) => obj.date == workoutDate)
-      .sort((e1, e2) =>
-        e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
-      );
+  const runTimer = (increase) => {
+    let timersSeconds = getTimers(false);
+    let workoutList = workouts.filter((obj) => obj.date == workoutDate);
+    let timingVar = timing;
+    let currentTiming = timingVar.currentlyTiming + 1;
 
-    setMaxTimerLocation(timers.length);
-
-    let durations = [];
-
-    timers.forEach((element) => {
-      durations.push(parseFloat(element.duration));
-    });
-
-    timingSet();
-
-    setTimer(durations[0] * 60);
-
-    console.log(timing);
-
-    setTimeout(() => {
-      if (timing) {
-        new Audio(audio).play();
-        setTiming(false);
+    if (increase == true) {
+      if (timingVar.currentlyTiming + 1 <= workoutList.length) {
+        setTiming((prevState) => ({
+          ...prevState,
+          canTime: true,
+          timingValue: timersSeconds[currentTiming],
+          currentlyTiming: currentTiming,
+        }));
+        timingVar = {
+          canTime: true,
+          timingValue: timersSeconds[currentTiming],
+          currentlyTiming: currentTiming,
+        };
       }
-    }, durations[0] * 60 * 1000);
-  };
-
-  const continueTimer = () => {
-    let locTimer = timerLocation;
-    locTimer += 1;
-
-    if (locTimer <= maxTimerLocation) {
-      setTimerLocation(locTimer);
-
-      let timers = workouts
-        .filter((obj) => obj.date == workoutDate)
-        .sort((e1, e2) =>
-          e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
-        );
-
-      let durations = [];
-
-      timers.forEach((element) => {
-        durations.push(parseFloat(element.duration));
-      });
-
-      setTimer(durations[locTimer] * 60);
-
-      console.log(durations[locTimer]);
-
-      setTimeout(() => {
-        if (timing) {
-          new Audio(audio).play();
-          setTiming(false);
-        }
-      }, durations[locTimer] * 60 * 1000);
+    } else if (increase == false) {
+      setTiming((prevState) => ({
+        ...prevState,
+        canTime: true,
+        timingValue: timersSeconds[0],
+        currentlyTiming: 0,
+      }));
+      timingVar = {
+        canTime: true,
+        timingValue: timersSeconds[0],
+        currentlyTiming: 0,
+      };
     }
-  };
 
-  const setTimingTrue = () => {
-    console.log("d");
-    if (timing == false) {
-      let newVal = true;
-      setTiming(newVal);
-    }
+    setTimer(timingVar.timingValue);
+    console.log(timingVar.timingValue);
+
+    const timeoutID = setTimeout(() => {
+      if (timingVar.canTime) {
+        setTiming((prevState) => ({
+          ...prevState,
+          canTime: false,
+          timingValue: timersSeconds,
+          currentlyTiming: timingVar.currentlyTiming,
+        }));
+        timingVar = {
+          canTime: false,
+          timingValue: timersSeconds,
+          currentlyTiming: timingVar.currentlyTiming,
+        };
+
+        console.log("succes");
+      }
+    }, timingVar.timingValue * 1000);
+
+    setTimeOut(timeoutID);
   };
 
   // use effects
@@ -319,9 +321,11 @@ function App() {
     });
 
     getExcerciseData(muscleInput);
-    setInterval(() => {
+    setInterval(function () {
       incTimer();
     }, 1000);
+
+    set(ref(db, "/timing"), false);
   }, []);
 
   return (
@@ -407,7 +411,7 @@ function App() {
                   <h1>
                     {workout.name} - {workout.duration}min
                   </h1>
-                  {timerLocation == index && timing && (
+                  {timing.canTime && timing.currentlyTiming == index && (
                     <h5>{convertStoMs(timer)}</h5>
                   )}
                 </div>
@@ -417,8 +421,8 @@ function App() {
             <button
               id="btn1"
               onClick={() => {
-                setTimingTrue();
                 startTimer();
+                runTimer(false);
               }}
             >
               start
@@ -426,12 +430,19 @@ function App() {
             <button
               id="btn2"
               onClick={() => {
-                continueTimer();
+                startContinueTimer();
+                runTimer(true);
               }}
             >
               continue
             </button>
-            <button id="btn3" onClick={() => stopTimer()}>
+            <button
+              id="btn3"
+              onClick={() => {
+                clearTimeout(timeOut);
+                stopTimer();
+              }}
+            >
               stop
             </button>
             <button
@@ -528,7 +539,6 @@ function App() {
               style={{ backgroundColor: "rgba(32, 203, 111)", color: "white" }}
               onClick={() => {
                 workoutTimerRef.current?.makeVisible(1);
-                createTimerList();
               }}
             >
               Start workout
