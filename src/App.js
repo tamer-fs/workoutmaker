@@ -198,11 +198,16 @@ function App() {
   };
 
   const incTimer = () => {
-    setTimer((timer) => timer - 1);
+    setTimer((timer) => timer - 0.5);
   };
 
   const getTimers = (ms) => {
-    let timers = workouts.filter((obj) => obj.date == workoutDate);
+    let timers = workouts
+      .filter((obj) => obj.date == workoutDate)
+      .sort((e1, e2) =>
+        e1.order < e2.order ? 1 : e1.order > e2.order ? -1 : 0
+      );
+    console.log(timers);
     let list = [];
     timers.forEach((obj) => {
       if (ms) {
