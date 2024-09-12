@@ -219,7 +219,7 @@ function App() {
     setTiming((prevState) => ({
       ...prevState,
       canTime: true,
-      timingValue: prevState.timingValue,
+      timingValue: 0,
       currentlyTiming: 0,
     }));
     return;
@@ -229,7 +229,7 @@ function App() {
     setTiming((prevState) => ({
       ...prevState,
       canTime: true,
-      timingValue: prevState.timingValue,
+      timingValue: 0,
       currentlyTiming: prevState.currentlyTiming,
     }));
   };
@@ -245,10 +245,12 @@ function App() {
   };
 
   const runTimer = (increase) => {
-    let timersSeconds = getTimers(false);
+    let timersSeconds = getTimers(false).reverse();
     let workoutList = workouts.filter((obj) => obj.date == workoutDate);
     let timingVar = timing;
     let currentTiming = timingVar.currentlyTiming + 1;
+
+    console.log(timersSeconds);
 
     if (increase == true) {
       if (timingVar.currentlyTiming + 1 <= workoutList.length) {
