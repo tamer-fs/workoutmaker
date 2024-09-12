@@ -431,6 +431,7 @@ function App() {
             <button
               id="btn2"
               onClick={() => {
+                clearTimeout(timeOut);
                 startContinueTimer();
                 runTimer(true);
               }}
