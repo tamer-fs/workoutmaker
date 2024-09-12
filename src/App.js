@@ -294,8 +294,7 @@ function App() {
           timingValue: timersSeconds,
           currentlyTiming: timingVar.currentlyTiming,
         };
-
-        console.log("succes");
+        new Audio(audio).play();
       }
     }, timingVar.timingValue * 1000);
 
