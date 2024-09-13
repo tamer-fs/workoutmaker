@@ -40,6 +40,25 @@ function App() {
   const [workoutDate, setWorkoutDate] = useState("Workout: 9-7-2025");
   const [dateIncrement, setDateIncrement] = useState(0);
 
+  const colors = {
+    red: {
+      backgroundColor: "rgba(222, 67, 67, 0.6)",
+      border: "4px solid rgba(222, 67, 67)",
+    },
+    orange: {
+      backgroundColor: "rgba(230, 116, 68, 0.6)",
+      border: "4px solid rgb(230, 116, 68)",
+    },
+    yellow: {
+      backgroundColor: "rgba(244, 229, 94, 0.6)",
+      border: "4px solid rgb(244, 229, 94)",
+    },
+    green: {
+      backgroundColor: "rgba(32, 203, 111, 0.6)",
+      border: "4px solid rgba(32, 203, 111)",
+    },
+  };
+
   const [excerciseName, setExcerciseName] = useState("");
   const [excerciseDuration, setexcerciseDuration] = useState();
   const [excerciseColor, setExcerciseColor] = useState("green");
@@ -58,15 +77,14 @@ function App() {
   const [timerLocation, setTimerLocation] = useState(0);
 
   // functions
-  const changeDateIncrement = (inc) => {
-    let increment = dateIncrement;
-    increment += inc;
-    setDateIncrement(increment);
-  };
 
-  const changeDate = () => {
+  const changeDate = (inc) => {
+    let dateIncrementVar = dateIncrement;
+    dateIncrementVar += inc;
+    setDateIncrement((increment) => increment + inc);
+
     let date = new Date();
-    date.setDate(date.getDate() + dateIncrement);
+    date.setDate(date.getDate() + dateIncrementVar);
     let day = date.getDate();
     let month = date.getMonth();
     let year = date.getFullYear();
@@ -89,7 +107,7 @@ function App() {
     setWorkouts(listCopy);
     console.log(workouts);
     setExcerciseName("");
-    setexcerciseDuration(0);
+    setexcerciseDuration("");
     setExcerciseColor("green");
     set(ref(db, `/${id}`), {
       name: excerciseName,
@@ -194,11 +212,16 @@ function App() {
     let extraSeconds = seconds % 60;
     minutes = minutes < 10 ? "0" + minutes : minutes;
     extraSeconds = extraSeconds < 10 ? "0" + extraSeconds : extraSeconds;
-    return minutes + " : " + Math.round(extraSeconds);
+    if (extraSeconds > 9) {
+      return minutes + " : " + Math.round(extraSeconds);
+    } else if (extraSeconds <= 9) {
+      return minutes + " : " + "0" + Math.round(extraSeconds);
+    }
   };
 
+  // ! CHANGE TO 0.5 WHILE DEVELOPING | CHANGE TO 1 WHILE COMMITING
   const incTimer = () => {
-    setTimer((timer) => timer - 1);
+    setTimer((timer) => timer - 0.5);
   };
 
   const getTimers = (ms) => {
@@ -413,12 +436,18 @@ function App() {
                 e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
               )
               .map((workout, index) => (
-                <div id={index} className="timer-block">
-                  <h1>
-                    {workout.name} - {workout.duration}min
-                  </h1>
+                <div
+                  id={index}
+                  className="timer-block"
+                  style={colors[workout.color]}
+                >
+                  <h1>{workout.name}</h1>
                   {timing.canTime && timing.currentlyTiming == index && (
-                    <h5>{convertStoMs(timer)}</h5>
+                    <h5 style={colors[workout.color]}>{convertStoMs(timer)}</h5>
+                  )}
+
+                  {timing.canTime == false && (
+                    <h4>{convertStoMs(workout.duration * 60)}</h4>
                   )}
                 </div>
               ))}
@@ -504,8 +533,7 @@ function App() {
           <div className="date-selection">
             <button
               onClick={() => {
-                changeDate();
-                changeDateIncrement(-1);
+                changeDate(-1);
               }}
             >
               {"<"}
@@ -513,8 +541,7 @@ function App() {
             <h3>{workoutDate}</h3>
             <button
               onClick={() => {
-                changeDate();
-                changeDateIncrement(1);
+                changeDate(1);
               }}
             >
               {">"}

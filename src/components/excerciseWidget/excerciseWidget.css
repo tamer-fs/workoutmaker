@@ -24,9 +24,10 @@
 }
 
 .description-details {
-  color: white;
+  color: rgba(255, 255, 255, 0.753);
   font-size: 24px;
   padding-top: 20px;
+  font-weight: 100;
 }
 
 .buttons {
@@ -48,6 +49,9 @@
 @media screen and (max-width: 2000px) {
   .excercise-widget-container .title-container > h2 {
     font-size: 32px;
+  }
+  .description-details {
+    font-size: 15px;
   }
   .excercise-widget-container .excercise-details > p {
     font-size: 15px;
