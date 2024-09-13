@@ -221,7 +221,7 @@ function App() {
 
   // ! CHANGE TO 0.5 WHILE DEVELOPING | CHANGE TO 1 WHILE COMMITING
   const incTimer = () => {
-    setTimer((timer) => timer - 0.5);
+    setTimer((timer) => timer - 1);
   };
 
   const getTimers = (ms) => {
