@@ -7,6 +7,7 @@ import $ from "jquery";
 import audio from "./done.mp3";
 import db from "./firebaseConfig";
 import { get, onValue, ref, set, update } from "firebase/database";
+import Dropdown from "./components/dropdown/Dropdown";
 
 function App() {
   // refs
@@ -137,11 +138,11 @@ function App() {
         let list = [];
         result.forEach((excercise) => {
           list.push({
-            name: excercise["name"],
-            muscle: excercise["muscle"],
-            equipment: excercise["equipment"],
-            explaination: excercise["instructions"],
-            intensity: excercise["difficulty"],
+            name: excercise["name"].replace("_", " "),
+            muscle: excercise["muscle"].replace("_", " "),
+            equipment: excercise["equipment"].replace("_", " "),
+            explaination: excercise["instructions"].replace("_", " "),
+            intensity: excercise["difficulty"].replace("_", " "),
           });
         });
         changeWorkouts(list);
@@ -494,24 +495,166 @@ function App() {
       <div className="app-container">
         <div className="excercise-list-widget">
           <div className="input-field">
-            <input
-              type="text"
-              id="muscle-input"
-              placeholder="Welk spier wilt u trainen?"
-              onChange={(e) => {
-                setMuscleInput(e.target.value);
-              }}
-              value={muscleInput}
-            />
-            <button
-              className="search-btn"
-              onClick={() => {
-                getExcerciseData(muscleInput);
-                setExcercises([]);
-              }}
+            <Dropdown
+              id={"dropdown-0"}
+              maxHeight={400}
+              title={muscleInput.replace("_", " ")}
             >
-              Zoek
-            </button>
+              <h2>upper body</h2>
+              <li
+                onClick={() => {
+                  setMuscleInput("abdominals");
+                  getExcerciseData("abdominals");
+                  setExcercises([]);
+                }}
+              >
+                abdominals
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("abductors");
+                  getExcerciseData("abductors");
+                  setExcercises([]);
+                }}
+              >
+                abductors
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("adductors");
+                  getExcerciseData("adductors");
+                  setExcercises([]);
+                }}
+              >
+                adductors
+              </li>
+
+              <li
+                onClick={() => {
+                  setMuscleInput("triceps");
+                  getExcerciseData("triceps");
+                  setExcercises([]);
+                }}
+              >
+                triceps
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("biceps");
+                  getExcerciseData("biceps");
+                  setExcercises([]);
+                }}
+              >
+                biceps
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("forearms");
+                  getExcerciseData("forearms");
+                  setExcercises([]);
+                }}
+              >
+                forearms
+              </li>
+
+              <li
+                onClick={() => {
+                  setMuscleInput("chest");
+                  getExcerciseData("chest");
+                  setExcercises([]);
+                }}
+              >
+                chest
+              </li>
+
+              <li
+                onClick={() => {
+                  setMuscleInput("lats");
+                  getExcerciseData("lats");
+                  setExcercises([]);
+                }}
+              >
+                lats
+              </li>
+
+              <li
+                onClick={() => {
+                  setMuscleInput("lower_back");
+                  getExcerciseData("lower_back");
+                  setExcercises([]);
+                }}
+              >
+                lower back
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("middle_back");
+                  getExcerciseData("middle_back");
+                  setExcercises([]);
+                }}
+              >
+                middle back
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("traps");
+                  getExcerciseData("traps");
+                  setExcercises([]);
+                }}
+              >
+                traps
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("neck");
+                  getExcerciseData("neck");
+                  setExcercises([]);
+                }}
+              >
+                neck
+              </li>
+
+              <br />
+
+              <h2>lower body</h2>
+              <li
+                onClick={() => {
+                  setMuscleInput("quadriceps");
+                  getExcerciseData("quadriceps");
+                  setExcercises([]);
+                }}
+              >
+                quadriceps
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("hamstrings");
+                  getExcerciseData("hamstrings");
+                  setExcercises([]);
+                }}
+              >
+                hamstrings
+              </li>
+              <li
+                onClick={() => {
+                  setMuscleInput("glutes");
+                  getExcerciseData("glutes");
+                  setExcercises([]);
+                }}
+              >
+                glutes
+              </li>
+
+              <li
+                onClick={() => {
+                  setMuscleInput("calves");
+                  getExcerciseData("calves");
+                  setExcercises([]);
+                }}
+              >
+                calves
+              </li>
+            </Dropdown>
           </div>
           <div className="excercise-list">
             {excercises.map((excercise, index) => (

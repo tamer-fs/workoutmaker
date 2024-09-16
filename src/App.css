@@ -49,6 +49,7 @@
   justify-content: flex-end;
   align-items: center;
   padding: 0px 40px;
+  position: relative;
 }
 
 #muscle-input {
