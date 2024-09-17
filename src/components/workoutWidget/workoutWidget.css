@@ -34,6 +34,7 @@
 }
 
 .x-btn,
+.edit-btn,
 .up-btn,
 .down-btn {
   color: white;
@@ -44,6 +45,10 @@
 }
 
 .down-btn:hover {
+  opacity: 0.8;
+}
+
+.edit-btn:hover {
   opacity: 0.8;
 }
 
@@ -58,13 +63,6 @@
 .x-btn {
   color: white;
   font-size: 25px;
-}
-
-.down-btn {
-  padding-right: 20px;
-}
-
-.down-btn {
 }
 
 #order-input {

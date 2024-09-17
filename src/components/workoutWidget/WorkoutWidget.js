@@ -15,6 +15,7 @@ const WorkoutWidget = forwardRef(
     ref,
     deleteFn,
     changeOrderFn,
+    editFn,
     timed,
   }) => {
     let style = {};
@@ -54,10 +55,15 @@ const WorkoutWidget = forwardRef(
       setWorkoutOrderInput(order);
     };
 
+    const editWorkout = () => {
+      editFn(index);
+    };
+
     useImperativeHandle(ref, () => ({
       callParentFunction: deleteExcercise,
       changeWorkoutOrder,
       setWorkoutOrder,
+      editWorkout,
     }));
 
     return (
@@ -68,22 +74,26 @@ const WorkoutWidget = forwardRef(
             <h3>{duration}min</h3>
           </div>
           <div className="buttons-container">
-            <button className="x-btn" onClick={() => deleteExcercise()}>
-              ✖
-            </button>
-            <div>
-              <input
-                type="text"
-                placeholder="0"
-                id="order-input"
-                value={workoutOrderInput}
-                onChange={(e) => setWorkoutOrderInput(e.target.value)}
-              ></input>
+            <div style={{ display: "flex", gap: 15 }}>
+              <button className="x-btn" onClick={() => deleteExcercise()}>
+                ✖
+              </button>
+              <button className="edit-btn" onClick={() => editWorkout()}>
+                ✎
+              </button>
+            </div>
+            <div style={{ display: "flex", gap: 15 }}>
               <button
                 className="up-btn"
-                onClick={() => changeWorkoutOrder(workoutOrderInput)}
+                onClick={() => changeWorkoutOrder("up")}
               >
-                ok
+                ▲
+              </button>
+              <button
+                className="down-btn"
+                onClick={() => changeWorkoutOrder("down")}
+              >
+                ▼
               </button>
             </div>
           </div>

@@ -66,6 +66,8 @@ function App() {
 
   const [workouts, setWorkouts] = useState([]);
   const [excercises, setExcercises] = useState([]);
+  const [editing, setEditing] = useState(false);
+  const [editingIndex, setEditingIndex] = useState(0);
 
   const [timer, setTimer] = useState(0);
   const [timing, setTiming] = useState({
@@ -74,8 +76,6 @@ function App() {
     currentlyTiming: 0,
   });
   const [timeOut, setTimeOut] = useState(null);
-
-  const [timerLocation, setTimerLocation] = useState(0);
 
   // functions
 
@@ -159,53 +159,154 @@ function App() {
   };
 
   const deleteExcerciseFromWorkout = (index) => {
-    let listCopy = workouts;
-    set(ref(db, `/${listCopy[index].id}`), {});
-    listCopy.splice(index, 1);
+    let listCopy = workouts.filter((obj) => obj.date == workoutDate);
+    let listCopyOtherDate = workouts
+      .filter((obj) => obj.date != workoutDate)
+      .sort((e1, e2) =>
+        e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
+      );
+
     let list = [];
-    setWorkouts([]);
+    set(ref(db, `/${listCopy[index].id}`), {});
+
+    listCopy
+      .splice(index, 1)
+      .sort((e1, e2) =>
+        e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
+      );
+
+    let order = 0;
     listCopy.forEach((element) => {
-      list.push({
+      element.order = order;
+      order += 1;
+    });
+
+    list = listCopy.concat(listCopyOtherDate);
+  };
+
+  const changeWorkoutOrder = (movement, index) => {
+    let listCopy = workouts.filter((obj) => obj.date == workoutDate);
+    let element = listCopy[index];
+    let otherElement;
+    let succes;
+
+    if (movement == "up") {
+      if (element.order != 0) {
+        otherElement = listCopy[index - 1];
+        listCopy[index] = {
+          color: element.color,
+          date: element.date,
+          duration: element.duration,
+          name: element.name,
+          order: otherElement.order,
+          timed: element.timed,
+          id: element.id,
+        };
+        listCopy[index - 1] = {
+          color: otherElement.color,
+          date: otherElement.date,
+          duration: otherElement.duration,
+          name: otherElement.name,
+          order: element.order,
+          timed: otherElement.timed,
+          id: otherElement.id,
+        };
+        succes = true;
+      }
+    } else if (movement == "down") {
+      if (element.order < listCopy.length - 1) {
+        otherElement = listCopy[index + 1];
+        listCopy[index] = {
+          color: element.color,
+          date: element.date,
+          duration: element.duration,
+          name: element.name,
+          order: otherElement.order,
+          timed: element.timed,
+          id: element.id,
+        };
+        listCopy[index + 1] = {
+          color: otherElement.color,
+          date: otherElement.date,
+          duration: otherElement.duration,
+          name: otherElement.name,
+          order: element.order,
+          timed: otherElement.timed,
+          id: otherElement.id,
+        };
+        succes = true;
+      }
+    }
+
+    let list = listCopy.sort((e1, e2) =>
+      e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
+    );
+
+    if (succes) {
+      setWorkouts(list);
+
+      set(ref(db, `/${element.id}`), {
+        name: element.name,
+        duration: element.duration,
         color: element.color,
         date: element.date,
-        duration: element.duration,
-        name: element.name,
-        order: element.order,
+        order: otherElement.order,
         timed: element.timed,
         id: element.id,
       });
-    });
-    setWorkouts(list);
+
+      set(ref(db, `/${otherElement.id}`), {
+        name: otherElement.name,
+        duration: otherElement.duration,
+        color: otherElement.color,
+        date: otherElement.date,
+        order: element.order,
+        timed: otherElement.timed,
+        id: otherElement.id,
+      });
+    }
   };
 
-  const changeWorkoutOrder = (order, index) => {
+  const editWorkout = (index) => {
     let listCopy = workouts.filter((obj) => obj.date == workoutDate);
     let element = listCopy[index];
 
-    element = {
-      color: element.color,
+    setExcerciseColor(element.color);
+    setExcerciseName(element.name);
+    setexcerciseDuration(element.duration);
+
+    setEditing(true);
+    setEditingIndex(index);
+
+    addExserciseRef.current?.makeVisible(0);
+  };
+
+  const editExcercise = (index) => {
+    let listCopy = workouts.filter((obj) => obj.date == workoutDate);
+    let element = listCopy[index];
+    listCopy[index] = {
+      name: excerciseName,
+      duration: excerciseDuration,
+      color: excerciseColor,
       date: element.date,
-      duration: element.duration,
-      name: element.name,
-      order: order,
+      order: element.order,
       timed: element.timed,
       id: element.id,
     };
-    listCopy[index] = element;
-    let list = [];
-    setWorkouts([]);
-    listCopy.forEach((element) => {
-      list.push({
-        color: element.color,
-        date: element.date,
-        duration: element.duration,
-        name: element.name,
-        order: element.order,
-        timed: element.timed,
-        id: element.id,
-      });
+    setWorkouts(listCopy);
+    setExcerciseName("");
+    setexcerciseDuration("");
+    setExcerciseColor("green");
+    setEditing(false);
+    set(ref(db, `/${element.id}`), {
+      name: excerciseName,
+      duration: excerciseDuration,
+      color: excerciseColor,
+      date: element.date,
+      order: element.order,
+      timed: element.timed,
+      id: element.id,
     });
-    setWorkouts(list);
   };
 
   const convertStoMs = (seconds) => {
@@ -345,7 +446,9 @@ function App() {
       const data = snapshot.val();
       let values;
       if (data) {
-        values = Object.values(data);
+        values = Object.values(data).sort((e1, e2) =>
+          e1.order > e2.order ? 1 : e1.order < e2.order ? -1 : 0
+        );
         setWorkouts(values);
       }
     });
@@ -413,14 +516,26 @@ function App() {
             >
               annuleer
             </button>
-            <button
-              onClick={() => {
-                addExcercise();
-                addExserciseRef.current?.makeInVisible(0);
-              }}
-            >
-              voeg oefening toe
-            </button>
+            {!editing && (
+              <button
+                onClick={() => {
+                  addExcercise();
+                  addExserciseRef.current?.makeInVisible(0);
+                }}
+              >
+                voeg oefening toe
+              </button>
+            )}
+            {editing && (
+              <button
+                onClick={() => {
+                  editExcercise(editingIndex);
+                  addExserciseRef.current?.makeInVisible(0);
+                }}
+              >
+                pas oefening aan
+              </button>
+            )}
           </div>
         </div>
       </Popup>
@@ -706,6 +821,7 @@ function App() {
                     ref={workoutWidgetRef}
                     deleteFn={deleteExcerciseFromWorkout}
                     changeOrderFn={changeWorkoutOrder}
+                    editFn={editWorkout}
                     timed={workout.timed}
                   />
                 </div>
@@ -718,11 +834,12 @@ function App() {
                 workoutTimerRef.current?.makeVisible(1);
               }}
             >
-              Start workout
+              Workout timer
             </button>
 
             <button
               onClick={() => {
+                setEditing(false);
                 addExserciseRef.current?.makeVisible(0);
               }}
             >
