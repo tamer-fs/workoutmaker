@@ -8,6 +8,14 @@ import audio from "./done.mp3";
 import db from "./firebaseConfig";
 import { get, onValue, ref, set, update } from "firebase/database";
 import Dropdown from "./components/dropdown/Dropdown";
+import { Line, Pie } from "react-chartjs-2";
+import {
+  CategoryScale,
+  Chart,
+  LinearScale,
+  LineElement,
+  PointElement,
+} from "chart.js";
 
 function App() {
   // refs
@@ -64,10 +72,17 @@ function App() {
   const [excerciseDuration, setexcerciseDuration] = useState();
   const [excerciseColor, setExcerciseColor] = useState("green");
 
+  const [weightInput, setWeigtInput] = useState("");
+  const [fatInput, setFatInput] = useState("");
+  const [spierInput, setSpierInput] = useState("");
+  const [dateInput, setDateInput] = useState("");
+
   const [workouts, setWorkouts] = useState([]);
   const [excercises, setExcercises] = useState([]);
   const [editing, setEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState(0);
+
+  const [currentWindow, setCurrentWindow] = useState(0);
 
   const [timer, setTimer] = useState(0);
   const [timing, setTiming] = useState({
@@ -76,6 +91,35 @@ function App() {
     currentlyTiming: 0,
   });
   const [timeOut, setTimeOut] = useState(null);
+
+  const [progressData, setProgressData] = useState([]);
+
+  const [progressChartData, setProgressChartData] = useState({
+    labels: progressData.map((data) => data.date),
+    datasets: [
+      {
+        labels: ["Gewicht"],
+        data: progressData.map((data) => data.weight),
+        backgroundColor: ["#4365de"],
+        borderColor: "#4365de",
+        borderWidth: 5,
+      },
+      {
+        labels: ["Spier massa"],
+        data: progressData.map((data) => data.muscleMass),
+        backgroundColor: ["rgba(32, 203, 111)"],
+        borderColor: "rgba(32, 203, 111)",
+        borderWidth: 5,
+      },
+      {
+        labels: ["Vet massa"],
+        data: progressData.map((data) => data.fatMass),
+        backgroundColor: ["rgb(230, 116, 68)"],
+        borderColor: "rgb(230, 116, 68)",
+        borderWidth: 5,
+      },
+    ],
+  });
 
   // functions
 
@@ -110,7 +154,7 @@ function App() {
     setExcerciseName("");
     setexcerciseDuration("");
     setExcerciseColor("green");
-    set(ref(db, `/${id}`), {
+    set(ref(db, `excercises/${id}`), {
       name: excerciseName,
       duration: excerciseDuration,
       color: excerciseColor,
@@ -167,7 +211,7 @@ function App() {
       );
 
     let list = [];
-    set(ref(db, `/${listCopy[index].id}`), {});
+    set(ref(db, `excercises/${listCopy[index].id}`), {});
 
     listCopy
       .splice(index, 1)
@@ -182,6 +226,7 @@ function App() {
     });
 
     list = listCopy.concat(listCopyOtherDate);
+    setWorkouts(list);
   };
 
   const changeWorkoutOrder = (movement, index) => {
@@ -245,7 +290,7 @@ function App() {
     if (succes) {
       setWorkouts(list);
 
-      set(ref(db, `/${element.id}`), {
+      set(ref(db, `excercises/${element.id}`), {
         name: element.name,
         duration: element.duration,
         color: element.color,
@@ -255,7 +300,7 @@ function App() {
         id: element.id,
       });
 
-      set(ref(db, `/${otherElement.id}`), {
+      set(ref(db, `excercises/${otherElement.id}`), {
         name: otherElement.name,
         duration: otherElement.duration,
         color: otherElement.color,
@@ -298,7 +343,7 @@ function App() {
     setexcerciseDuration("");
     setExcerciseColor("green");
     setEditing(false);
-    set(ref(db, `/${element.id}`), {
+    set(ref(db, `excercises/${element.id}`), {
       name: excerciseName,
       duration: excerciseDuration,
       color: excerciseColor,
@@ -433,6 +478,60 @@ function App() {
     setTimeOut(timeoutID);
   };
 
+  const addChartData = () => {
+    let id = Math.round(Math.random() * 100000);
+    let dataRef = ref(db, `chartData/${id}`);
+    set(dataRef, {
+      id: id,
+      muscleMass: spierInput,
+      fatMass: fatInput,
+      weight: weightInput,
+      date: dateInput,
+    });
+
+    let progressDataCopy = progressData;
+    progressDataCopy.push({
+      id: id,
+      muscleMass: spierInput,
+      fatMass: fatInput,
+      weight: weightInput,
+      date: dateInput,
+    });
+    setProgressData(progressDataCopy);
+
+    setProgressChartData({
+      labels: progressDataCopy.map((data) => data.date),
+      datasets: [
+        {
+          labels: ["Gewicht"],
+          data: progressDataCopy.map((data) => data.weight),
+          backgroundColor: ["#4365de"],
+          borderColor: "#4365de",
+          borderWidth: 5,
+        },
+        {
+          labels: ["Spier massa"],
+          data: progressDataCopy.map((data) => data.muscleMass),
+          backgroundColor: ["rgba(32, 203, 111)"],
+          borderColor: "rgba(32, 203, 111)",
+          borderWidth: 5,
+        },
+        {
+          labels: ["Vet massa"],
+          data: progressDataCopy.map((data) => data.fatMass),
+          backgroundColor: ["rgb(230, 116, 68)"],
+          borderColor: "rgb(230, 116, 68)",
+          borderWidth: 5,
+        },
+      ],
+    });
+
+    setSpierInput("");
+    setFatInput("");
+    setWeigtInput("");
+    setDateInput("");
+  };
+
   // use effects
   useEffect(() => {
     let date = new Date();
@@ -441,7 +540,7 @@ function App() {
     let year = date.getFullYear();
     setWorkoutDate(`Workout: ${day}-${month + 1}-${year}`);
 
-    const dataRef = ref(db, "/");
+    const dataRef = ref(db, "excercises/");
     onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
       let values;
@@ -453,13 +552,52 @@ function App() {
       }
     });
 
+    const chartref = ref(db, "chartData/");
+    onValue(chartref, (snapshot) => {
+      const data = snapshot.val();
+      let values;
+      if (data) {
+        values = Object.values(data);
+        setProgressData(values);
+        setProgressChartData({
+          labels: values.map((data) => data.date),
+          datasets: [
+            {
+              labels: ["Gewicht"],
+              data: values.map((data) => data.weight),
+              backgroundColor: ["#4365de"],
+              borderColor: "#4365de",
+              borderWidth: 5,
+            },
+            {
+              labels: ["Spier massa"],
+              data: values.map((data) => data.muscleMass),
+              backgroundColor: ["rgba(32, 203, 111)"],
+              borderColor: "rgba(32, 203, 111)",
+              borderWidth: 5,
+            },
+            {
+              labels: ["Vet massa"],
+              data: values.map((data) => data.fatMass),
+              backgroundColor: ["rgb(230, 116, 68)"],
+              borderColor: "rgb(230, 116, 68)",
+              borderWidth: 5,
+            },
+          ],
+        });
+      }
+    });
+
     getExcerciseData(muscleInput);
     setInterval(function () {
       incTimer();
     }, 1000);
-
-    set(ref(db, "/timing"), false);
   }, []);
+
+  Chart.register(CategoryScale);
+  Chart.register(LinearScale);
+  Chart.register(PointElement);
+  Chart.register(LineElement);
 
   return (
     <>
@@ -609,183 +747,270 @@ function App() {
 
       <div className="app-container">
         <div className="excercise-list-widget">
-          <div className="input-field">
-            <Dropdown
-              id={"dropdown-0"}
-              maxHeight={400}
-              title={muscleInput.replace("_", " ")}
-            >
-              <h2>upper body</h2>
-              <li
-                onClick={() => {
-                  setMuscleInput("abdominals");
-                  getExcerciseData("abdominals");
-                  setExcercises([]);
-                }}
-              >
-                abdominals
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("abductors");
-                  getExcerciseData("abductors");
-                  setExcercises([]);
-                }}
-              >
-                abductors
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("adductors");
-                  getExcerciseData("adductors");
-                  setExcercises([]);
-                }}
-              >
-                adductors
-              </li>
-
-              <li
-                onClick={() => {
-                  setMuscleInput("triceps");
-                  getExcerciseData("triceps");
-                  setExcercises([]);
-                }}
-              >
-                triceps
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("biceps");
-                  getExcerciseData("biceps");
-                  setExcercises([]);
-                }}
-              >
-                biceps
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("forearms");
-                  getExcerciseData("forearms");
-                  setExcercises([]);
-                }}
-              >
-                forearms
-              </li>
-
-              <li
-                onClick={() => {
-                  setMuscleInput("chest");
-                  getExcerciseData("chest");
-                  setExcercises([]);
-                }}
-              >
-                chest
-              </li>
-
-              <li
-                onClick={() => {
-                  setMuscleInput("lats");
-                  getExcerciseData("lats");
-                  setExcercises([]);
-                }}
-              >
-                lats
-              </li>
-
-              <li
-                onClick={() => {
-                  setMuscleInput("lower_back");
-                  getExcerciseData("lower_back");
-                  setExcercises([]);
-                }}
-              >
-                lower back
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("middle_back");
-                  getExcerciseData("middle_back");
-                  setExcercises([]);
-                }}
-              >
-                middle back
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("traps");
-                  getExcerciseData("traps");
-                  setExcercises([]);
-                }}
-              >
-                traps
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("neck");
-                  getExcerciseData("neck");
-                  setExcercises([]);
-                }}
-              >
-                neck
-              </li>
-
-              <br />
-
-              <h2>lower body</h2>
-              <li
-                onClick={() => {
-                  setMuscleInput("quadriceps");
-                  getExcerciseData("quadriceps");
-                  setExcercises([]);
-                }}
-              >
-                quadriceps
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("hamstrings");
-                  getExcerciseData("hamstrings");
-                  setExcercises([]);
-                }}
-              >
-                hamstrings
-              </li>
-              <li
-                onClick={() => {
-                  setMuscleInput("glutes");
-                  getExcerciseData("glutes");
-                  setExcercises([]);
-                }}
-              >
-                glutes
-              </li>
-
-              <li
-                onClick={() => {
-                  setMuscleInput("calves");
-                  getExcerciseData("calves");
-                  setExcercises([]);
-                }}
-              >
-                calves
-              </li>
-            </Dropdown>
+          <div className="tab-switcher">
+            <button onClick={() => setCurrentWindow(0)}>Oefeningen</button>
+            <button onClick={() => setCurrentWindow(1)}>Grafiek</button>
           </div>
-          <div className="excercise-list">
-            {excercises.map((excercise, index) => (
-              <div id={index}>
-                <ExcerciseWidget
-                  name={excercise.name}
-                  muscle={excercise.muscle}
-                  equipment={excercise.equipment}
-                  descriptionText={excercise.explaination}
-                  intensity={excercise.intensity}
-                  addToWorkoutFunction={testFn}
-                  ref={addToWorkoutRef}
-                />
+          {currentWindow == 0 && (
+            <>
+              <div className="input-field">
+                <Dropdown
+                  id={"dropdown-0"}
+                  maxHeight={400}
+                  title={muscleInput.replace("_", " ")}
+                >
+                  <h2>upper body</h2>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("abdominals");
+                      getExcerciseData("abdominals");
+                      setExcercises([]);
+                    }}
+                  >
+                    abdominals
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("abductors");
+                      getExcerciseData("abductors");
+                      setExcercises([]);
+                    }}
+                  >
+                    abductors
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("adductors");
+                      getExcerciseData("adductors");
+                      setExcercises([]);
+                    }}
+                  >
+                    adductors
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      setMuscleInput("triceps");
+                      getExcerciseData("triceps");
+                      setExcercises([]);
+                    }}
+                  >
+                    triceps
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("biceps");
+                      getExcerciseData("biceps");
+                      setExcercises([]);
+                    }}
+                  >
+                    biceps
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("forearms");
+                      getExcerciseData("forearms");
+                      setExcercises([]);
+                    }}
+                  >
+                    forearms
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      setMuscleInput("chest");
+                      getExcerciseData("chest");
+                      setExcercises([]);
+                    }}
+                  >
+                    chest
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      setMuscleInput("lats");
+                      getExcerciseData("lats");
+                      setExcercises([]);
+                    }}
+                  >
+                    lats
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      setMuscleInput("lower_back");
+                      getExcerciseData("lower_back");
+                      setExcercises([]);
+                    }}
+                  >
+                    lower back
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("middle_back");
+                      getExcerciseData("middle_back");
+                      setExcercises([]);
+                    }}
+                  >
+                    middle back
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("traps");
+                      getExcerciseData("traps");
+                      setExcercises([]);
+                    }}
+                  >
+                    traps
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("neck");
+                      getExcerciseData("neck");
+                      setExcercises([]);
+                    }}
+                  >
+                    neck
+                  </li>
+
+                  <br />
+
+                  <h2>lower body</h2>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("quadriceps");
+                      getExcerciseData("quadriceps");
+                      setExcercises([]);
+                    }}
+                  >
+                    quadriceps
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("hamstrings");
+                      getExcerciseData("hamstrings");
+                      setExcercises([]);
+                    }}
+                  >
+                    hamstrings
+                  </li>
+                  <li
+                    onClick={() => {
+                      setMuscleInput("glutes");
+                      getExcerciseData("glutes");
+                      setExcercises([]);
+                    }}
+                  >
+                    glutes
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      setMuscleInput("calves");
+                      getExcerciseData("calves");
+                      setExcercises([]);
+                    }}
+                  >
+                    calves
+                  </li>
+                </Dropdown>
               </div>
-            ))}
-          </div>
+              <div className="excercise-list">
+                {excercises.map((excercise, index) => (
+                  <div id={index}>
+                    <ExcerciseWidget
+                      name={excercise.name}
+                      muscle={excercise.muscle}
+                      equipment={excercise.equipment}
+                      descriptionText={excercise.explaination}
+                      intensity={excercise.intensity}
+                      addToWorkoutFunction={testFn}
+                      ref={addToWorkoutRef}
+                    />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          {currentWindow == 1 && (
+            <>
+              <div className="chart-title-container">
+                <Dropdown
+                  id={"dropdown-1"}
+                  maxHeight={200}
+                  title={"Laat alles zien"}
+                >
+                  <li>Laat alles zien</li>
+                  <li>Laat alleen vetmassa zien</li>
+                  <li>Laat alleen spiermassa zien</li>
+                  <li>Laat alleen gewicht zien</li>
+                </Dropdown>
+              </div>
+
+              <div className="progress-chart-container">
+                <div className="line-container">
+                  <Line
+                    data={progressChartData}
+                    options={{
+                      tension: 0.2,
+                      plugins: {
+                        responsive: true,
+                        legend: {
+                          position: "top",
+                        },
+                        title: {
+                          display: true,
+                          text: "hellloooo",
+                        },
+                        tooltip: {
+                          displayColors: true,
+                        },
+                      },
+                    }}
+                  />
+                </div>
+
+                <div className="data-add-continer">
+                  <h2>add data</h2>
+                  <div className="data-add-input-container">
+                    <input
+                      value={weightInput}
+                      onChange={(e) => {
+                        setWeigtInput(e.target.value);
+                      }}
+                      id="weight-input"
+                      placeholder="gewicht (kg)"
+                    ></input>
+                    <input
+                      value={spierInput}
+                      onChange={(e) => {
+                        setSpierInput(e.target.value);
+                      }}
+                      id="muscle-mass-input"
+                      placeholder="spier massa (kg)"
+                    ></input>
+                    <input
+                      value={fatInput}
+                      onChange={(e) => {
+                        setFatInput(e.target.value);
+                      }}
+                      id="fat-mass-input"
+                      placeholder="vet massa (kg)"
+                    ></input>
+                    <input
+                      value={dateInput}
+                      onChange={(e) => {
+                        setDateInput(e.target.value);
+                      }}
+                      id="date-input"
+                      placeholder="date (dd-mm-yyyy)"
+                    ></input>
+                  </div>
+                  <button onClick={() => addChartData()}>Voeg data toe</button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
         <div className="workout-widget">
           <div className="date-selection">

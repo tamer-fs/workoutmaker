@@ -20,6 +20,71 @@
   );
 }
 
+.chart-title-container {
+  padding: 0px 40px;
+  display: flex;
+  align-items: center;
+}
+
+.chart-title-container > h2 {
+  color: #4365de;
+  font-weight: 300;
+  font-size: 28px;
+}
+
+.progress-chart-container {
+  padding: 20px 40px;
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+.data-add-continer {
+  display: flex;
+  flex-direction: column;
+  padding-top: 40px;
+  color: #4365de;
+  font-size: 25px;
+  gap: 15px;
+}
+
+.data-add-input-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.line-container {
+  display: flex;
+  align-items: center;
+}
+
+.data-add-continer > button {
+  width: 100%;
+  background-color: #4365de;
+  padding: 10px 0px;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.data-add-continer > button:hover {
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.data-add-input-container > input {
+  background-color: #3f3f3f;
+  border: none;
+  padding: 10px;
+  border-radius: 12px;
+  width: 30%;
+  font-size: 18px;
+  outline: none;
+  position: relative;
+  color: white;
+}
+
 .app-container {
   display: grid;
   grid-template-columns: 3fr 3.5fr;
@@ -41,7 +106,35 @@
 .excercise-list-widget {
   display: grid;
   overflow: hidden;
-  grid-template-rows: 100px auto;
+  grid-template-rows: 70px 70px auto;
+}
+
+.tab-switcher {
+  display: flex;
+  padding: 0px 40px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 25px;
+}
+
+.tab-switcher > button {
+  background: none;
+  border: none;
+  color: #4365de;
+  font-size: 20px;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: 0.2s cubic-bezier(0.69, 0.04, 0.53, 1.36);
+  background-color: transparent;
+  border: 2px solid #4365de;
+  padding: 5px 20px;
+  border-radius: 25px;
+}
+
+.tab-switcher > button:hover {
+  background-color: #4365de;
+  color: white;
+  padding: 5px 30px;
 }
 
 .input-field {
@@ -402,6 +495,15 @@
 }
 
 @media screen and (max-width: 2000px) {
+  .chart-title-container {
+    padding: 0px 30px;
+  }
+  .progress-chart-container {
+    padding: 0px 30px;
+  }
+  .tab-switcher {
+    padding: 0px 30px;
+  }
   .date-selection {
     padding: 0px 30px;
   }

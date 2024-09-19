@@ -1,16 +1,24 @@
 .popup-window {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   width: 100vw;
   height: 100vh;
   top: 0px;
   left: 0px;
-  display: none;
+  visibility: collapse;
   z-index: 56;
+  transition: 0.2s ease;
+  opacity: 0;
 }
 
 .visible {
   display: flex;
   justify-content: center;
+  top: 0px;
   align-items: center;
   background-color: rgba(116, 116, 116, 0.342);
+  visibility: visible;
+  opacity: 1;
 }
