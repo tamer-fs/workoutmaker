@@ -84,6 +84,10 @@ function App() {
 
   const [currentWindow, setCurrentWindow] = useState(0);
 
+  const [graphSetting, setGraphSetting] = useState(
+    "Gewicht, Spiermassa, Vetmassa"
+  );
+
   const [timer, setTimer] = useState(0);
   const [timing, setTiming] = useState({
     canTime: false,
@@ -479,10 +483,9 @@ function App() {
   };
 
   const addChartData = () => {
-    let id = Math.round(Math.random() * 100000);
-    let dataRef = ref(db, `chartData/${id}`);
+    let dataRef = ref(db, `chartData/${dateInput}`);
     set(dataRef, {
-      id: id,
+      id: dateInput,
       muscleMass: spierInput,
       fatMass: fatInput,
       weight: weightInput,
@@ -491,7 +494,7 @@ function App() {
 
     let progressDataCopy = progressData;
     progressDataCopy.push({
-      id: id,
+      id: dateInput,
       muscleMass: spierInput,
       fatMass: fatInput,
       weight: weightInput,
@@ -529,7 +532,12 @@ function App() {
     setSpierInput("");
     setFatInput("");
     setWeigtInput("");
-    setDateInput("");
+
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth();
+    let year = date.getFullYear();
+    setDateInput(`${day}-${month + 1}-${year}`);
   };
 
   // use effects
@@ -539,6 +547,7 @@ function App() {
     let month = date.getMonth();
     let year = date.getFullYear();
     setWorkoutDate(`Workout: ${day}-${month + 1}-${year}`);
+    setDateInput(`${day}-${month + 1}-${year}`);
 
     const dataRef = ref(db, "excercises/");
     onValue(dataRef, (snapshot) => {
@@ -558,6 +567,17 @@ function App() {
       let values;
       if (data) {
         values = Object.values(data);
+        values = values.sort((a, b) => {
+          let da_split = a.date.split("-");
+          let db_split = b.date.split("-");
+          let da = new Date(`${da_split[2]}-${da_split[1]}-${da_split[0]}`),
+            dab = new Date(`${db_split[2]}-${db_split[1]}-${db_split[0]}`);
+
+          console.log(da);
+
+          return da.getTime() - dab.getTime();
+        });
+        console.log(values);
         setProgressData(values);
         setProgressChartData({
           labels: values.map((data) => data.date),
@@ -624,26 +644,93 @@ function App() {
               <h3>min</h3>
             </div>
             <div className="color-choose">
-              <input
-                className="choose-point"
-                style={{ backgroundColor: "#20CB6F" }}
-                onClick={() => setExcerciseColor("green")}
-              ></input>
-              <input
-                className="choose-point"
-                style={{ backgroundColor: "#F4E55E" }}
-                onClick={() => setExcerciseColor("yellow")}
-              ></input>
-              <input
-                className="choose-point"
-                style={{ backgroundColor: "#E67444" }}
-                onClick={() => setExcerciseColor("orange")}
-              ></input>
-              <input
-                className="choose-point"
-                style={{ backgroundColor: "#DE4343" }}
-                onClick={() => setExcerciseColor("red")}
-              ></input>
+              {excerciseColor == "green" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "#20CB6F",
+                    border: "4px solid #20CB6F",
+                  }}
+                  onClick={() => setExcerciseColor("green")}
+                ></input>
+              )}
+
+              {excerciseColor != "green" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "rgba(32, 203, 111, 0.2)",
+                    border: "4px solid #20CB6F",
+                  }}
+                  onClick={() => setExcerciseColor("green")}
+                ></input>
+              )}
+
+              {excerciseColor == "yellow" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "#F4E55E",
+                    border: "4px solid #F4E55E",
+                  }}
+                  onClick={() => setExcerciseColor("yellow")}
+                ></input>
+              )}
+
+              {excerciseColor != "yellow" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "rgba(244, 229, 94, 0.2)",
+                    border: "4px solid #F4E55E",
+                  }}
+                  onClick={() => setExcerciseColor("yellow")}
+                ></input>
+              )}
+
+              {excerciseColor == "orange" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "#E67444",
+                    border: "4px solid #E67444",
+                  }}
+                  onClick={() => setExcerciseColor("orange")}
+                ></input>
+              )}
+
+              {excerciseColor != "orange" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "rgba(230, 116, 68, 0.2)",
+                    border: "4px solid #E67444",
+                  }}
+                  onClick={() => setExcerciseColor("orange")}
+                ></input>
+              )}
+
+              {excerciseColor == "red" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "#DE4343",
+                    border: "4px solid #DE4343",
+                  }}
+                  onClick={() => setExcerciseColor("red")}
+                ></input>
+              )}
+
+              {excerciseColor != "red" && (
+                <input
+                  className="choose-point"
+                  style={{
+                    backgroundColor: "rgba(222, 67, 67, 0.2)",
+                    border: "4px solid #DE4343",
+                  }}
+                  onClick={() => setExcerciseColor("red")}
+                ></input>
+              )}
             </div>
           </div>
           <div className="finish">
@@ -681,7 +768,7 @@ function App() {
       <Popup ref={workoutTimerRef}>
         <div className="workout-timer-window">
           <div className="timer-title">
-            <h1>Timer starten</h1>
+            <h1>Workout Timer</h1>
           </div>
           <div className="excercises-timer">
             {workouts
@@ -724,7 +811,7 @@ function App() {
                 runTimer(true);
               }}
             >
-              continue
+              volgende
             </button>
             <button
               id="btn3"
@@ -749,7 +836,7 @@ function App() {
         <div className="excercise-list-widget">
           <div className="tab-switcher">
             <button onClick={() => setCurrentWindow(0)}>Oefeningen</button>
-            <button onClick={() => setCurrentWindow(1)}>Grafiek</button>
+            <button onClick={() => setCurrentWindow(1)}>Vooruitgang</button>
           </div>
           {currentWindow == 0 && (
             <>
@@ -938,12 +1025,99 @@ function App() {
                 <Dropdown
                   id={"dropdown-1"}
                   maxHeight={200}
-                  title={"Laat alles zien"}
+                  title={graphSetting}
                 >
-                  <li>Laat alles zien</li>
-                  <li>Laat alleen vetmassa zien</li>
-                  <li>Laat alleen spiermassa zien</li>
-                  <li>Laat alleen gewicht zien</li>
+                  <li
+                    onClick={() => {
+                      setProgressChartData({
+                        labels: progressData.map((data) => data.date),
+                        datasets: [
+                          {
+                            labels: ["Gewicht"],
+                            data: progressData.map((data) => data.weight),
+                            backgroundColor: ["#4365de"],
+                            borderColor: "#4365de",
+                            borderWidth: 5,
+                          },
+                        ],
+                      });
+                      setGraphSetting("Gewicht");
+                    }}
+                  >
+                    Gewicht
+                  </li>
+
+                  <li
+                    onClick={() => {
+                      setProgressChartData({
+                        labels: progressData.map((data) => data.date),
+                        datasets: [
+                          {
+                            labels: ["Vet massa"],
+                            data: progressData.map((data) => data.fatMass),
+                            backgroundColor: ["rgb(230, 116, 68)"],
+                            borderColor: "rgb(230, 116, 68)",
+                            borderWidth: 5,
+                          },
+                        ],
+                      });
+                      setGraphSetting("Vetmassa");
+                    }}
+                  >
+                    Vetmassa
+                  </li>
+                  <li
+                    onClick={() => {
+                      setProgressChartData({
+                        labels: progressData.map((data) => data.date),
+                        datasets: [
+                          {
+                            labels: ["Spier massa"],
+                            data: progressData.map((data) => data.muscleMass),
+                            backgroundColor: ["rgba(32, 203, 111)"],
+                            borderColor: "rgba(32, 203, 111)",
+                            borderWidth: 5,
+                          },
+                        ],
+                      });
+                      setGraphSetting("Spiermassa");
+                    }}
+                  >
+                    Spiermassa
+                  </li>
+                  <li
+                    onClick={() => {
+                      setProgressChartData({
+                        labels: progressData.map((data) => data.date),
+                        datasets: [
+                          {
+                            labels: ["Gewicht"],
+                            data: progressData.map((data) => data.weight),
+                            backgroundColor: ["#4365de"],
+                            borderColor: "#4365de",
+                            borderWidth: 5,
+                          },
+                          {
+                            labels: ["Spier massa"],
+                            data: progressData.map((data) => data.muscleMass),
+                            backgroundColor: ["rgba(32, 203, 111)"],
+                            borderColor: "rgba(32, 203, 111)",
+                            borderWidth: 5,
+                          },
+                          {
+                            labels: ["Vet massa"],
+                            data: progressData.map((data) => data.fatMass),
+                            backgroundColor: ["rgb(230, 116, 68)"],
+                            borderColor: "rgb(230, 116, 68)",
+                            borderWidth: 5,
+                          },
+                        ],
+                      });
+                      setGraphSetting("Gewicht, Spiermassa, Vetmassa");
+                    }}
+                  >
+                    Gewicht, spiermassa, vetmassa
+                  </li>
                 </Dropdown>
               </div>
 
@@ -971,7 +1145,7 @@ function App() {
                 </div>
 
                 <div className="data-add-continer">
-                  <h2>add data</h2>
+                  <h2>Gegevens toevoegen:</h2>
                   <div className="data-add-input-container">
                     <input
                       value={weightInput}
@@ -1006,9 +1180,16 @@ function App() {
                       placeholder="date (dd-mm-yyyy)"
                     ></input>
                   </div>
-                  <button onClick={() => addChartData()}>Voeg data toe</button>
+                  <button onClick={() => addChartData()}>
+                    Voeg gegevens toe
+                  </button>
                 </div>
               </div>
+            </>
+          )}
+          {currentWindow == 2 && (
+            <>
+              <h1>hello world</h1>
             </>
           )}
         </div>

@@ -123,18 +123,13 @@
   color: #4365de;
   font-size: 20px;
   text-transform: lowercase;
+  border-bottom: 2px solid #4365de;
+  padding-bottom: 2px;
   cursor: pointer;
-  transition: 0.2s cubic-bezier(0.69, 0.04, 0.53, 1.36);
-  background-color: transparent;
-  border: 2px solid #4365de;
-  padding: 5px 20px;
-  border-radius: 25px;
 }
 
 .tab-switcher > button:hover {
-  background-color: #4365de;
-  color: white;
-  padding: 5px 30px;
+  border-bottom: 4px solid #4365de;
 }
 
 .input-field {
