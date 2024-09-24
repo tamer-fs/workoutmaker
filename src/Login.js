@@ -1,12 +1,19 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import auth from "./authConfig";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import "./loginRegister.css";
+import googleIcon from "./google-icon.png";
 
 const SignIn = forwardRef(({ ref, changePageFn }) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+
+  const [errorMsg, setErrorMsg] = useState("");
 
   const navigate = useNavigate();
 
@@ -15,7 +22,35 @@ const SignIn = forwardRef(({ ref, changePageFn }) => {
       .then(() => {
         navigate("/dashboard");
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => {
+        if (password == "" || email == "") {
+          setErrorMsg("Niet alle velden zijn ingevuld.");
+          return;
+        } else if (err.code == "auth/invalid-credential") {
+          setErrorMsg(
+            "Inloggen is mislukt: check goed of u het wachtwoord / email adress goed heeft ingevuld."
+          );
+          return;
+        } else if (err.code == "auth/too-many-requests") {
+          setErrorMsg(
+            "Toegang tot dit account is tijdelijk geblokkeerd, omdat u te vaak verkeerd heeft proberen in te loggen."
+          );
+          return;
+        }
+
+        setErrorMsg(err.message);
+      });
+  };
+
+  const signInWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        setErrorMsg(error.message);
+      });
   };
 
   const changeUsePage = (page) => {
@@ -46,8 +81,15 @@ const SignIn = forwardRef(({ ref, changePageFn }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {errorMsg != "" && <p className="error-msg">{errorMsg}</p>}
 
-          <button onClick={() => signIn()}>Login</button>
+          <button className="normal-btn" onClick={() => signIn()}>
+            Inloggen
+          </button>
+          <button className="google-btn" onClick={() => signInWithGoogle()}>
+            <img src={googleIcon} alt="google-icon" />
+            Log in met google
+          </button>
         </div>
         <div className="login-register-footer">
           <p>Nog geen account?</p>

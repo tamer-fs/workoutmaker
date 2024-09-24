@@ -1,11 +1,18 @@
 import React, { forwardRef, useImperativeHandle, useState } from "react";
 import auth from "./authConfig";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import googleIcon from "./google-icon.png";
 
 const Register = forwardRef(({ ref, changePageFn }) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+
+  const [errorMsg, setErrorMsg] = useState("");
 
   const navigate = useNavigate();
 
@@ -15,8 +22,27 @@ const Register = forwardRef(({ ref, changePageFn }) => {
         navigate("/dashboard");
       })
       .catch((err) => {
-        console.log(err);
+        if (password == "" || email == "") {
+          setErrorMsg("Niet alle velden zijn ingevuld.");
+          return;
+        } else if (err.code == "auth/email-already-in-use") {
+          setErrorMsg(
+            "Het email adress dat u heeft ingevuld is al in gebruik."
+          );
+          return;
+        }
+
+        setErrorMsg(err.message);
       });
+  };
+
+  const registerWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        navigate("/dashboard");
+      })
+      .catch((error) => setErrorMsg(error.message));
   };
 
   const changeUsePage = (page) => {
@@ -47,8 +73,13 @@ const Register = forwardRef(({ ref, changePageFn }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+          {errorMsg != "" && <p className="error-msg">{errorMsg}</p>}
 
           <button onClick={() => register()}>Registreren</button>
+          <button className="google-btn" onClick={() => registerWithGoogle()}>
+            <img src={googleIcon} alt="google-icon" />
+            Registreer met google
+          </button>
         </div>
         <div className="login-register-footer">
           <p>Heeft u al een account?</p>
