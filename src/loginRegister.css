@@ -1,0 +1,116 @@
+.login-register-app {
+  width: 100vw;
+  height: 100vh;
+  padding: 75px;
+  box-sizing: border-box;
+  background-image: linear-gradient(
+    to right top,
+    #d16ba5,
+    #c777b9,
+    #ba83ca,
+    #aa8fd8,
+    #9a9ae1,
+    #8aa7ec,
+    #79b3f4,
+    #69bff8,
+    #52cffe,
+    #41dfff,
+    #46eefa,
+    #5ffbf1
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-register-form {
+  background: rgba(17, 17, 17, 0.93);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(9.1px);
+  -webkit-backdrop-filter: blur(9.1px);
+  border: 1px solid rgba(17, 17, 17, 1);
+  width: 50%;
+  max-width: 1000px;
+  min-width: 500px;
+  padding: 20px;
+  border-radius: 32px;
+}
+
+.login-register-title-container {
+  display: flex;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-bottom: 60px;
+  color: white;
+  align-items: center;
+  padding-left: 22px;
+}
+
+.login-register-title-container > h2 {
+  font-size: 45px;
+  color: #4365de;
+}
+
+.login-register-inputs-container {
+  display: flex;
+  flex-direction: column;
+  padding: 0px 20px;
+  gap: 20px;
+}
+
+.login-register-inputs-container > input {
+  background-color: #0c0c0c;
+  border: none;
+  padding: 20px 20px;
+  border-radius: 16px;
+  font-size: 18px;
+  outline: none;
+  color: white;
+  border: 2px solid rgb(49, 49, 49);
+}
+
+.login-register-inputs-container > button {
+  background-color: #4365de;
+  border: none;
+  padding: 10px;
+  border-radius: 16px;
+  margin-top: 20px;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.login-register-inputs-container > button:hover {
+  background-color: #4365deb2;
+}
+
+.login-register-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0px;
+  padding-top: 50px;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.login-register-footer > p {
+  color: white;
+  font-size: 20px;
+}
+
+.login-register-footer > button {
+  border: 2px solid #4365de;
+  background-color: transparent;
+  color: #4365de;
+  padding: 5px 20px;
+  font-size: 18px;
+  border-radius: 50px;
+  cursor: pointer;
+}
+
+.login-register-footer > button:hover {
+  background-color: #4365de;
+  color: white;
+}
