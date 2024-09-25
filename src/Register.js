@@ -82,6 +82,10 @@ const Register = forwardRef(({ ref, changePageFn }) => {
           </button>
         </div>
         <div className="login-register-footer">
+          <div className="login-register-footer-container">
+            <p>Ingelogd blijven</p>
+            <input className="switch" type="checkbox" />
+          </div>
           <p>Heeft u al een account?</p>
           <button
             onClick={() => {

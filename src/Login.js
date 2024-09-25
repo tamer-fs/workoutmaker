@@ -12,6 +12,7 @@ import googleIcon from "./google-icon.png";
 const SignIn = forwardRef(({ ref, changePageFn }) => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [keepLoggedIn, setKeepLoggedIn] = useState(false);
 
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -62,6 +63,18 @@ const SignIn = forwardRef(({ ref, changePageFn }) => {
     changeUsePage,
   }));
 
+  useState(() => {
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        console.log("no");
+        navigate("/");
+      } else {
+        console.log("yes");
+        navigate("/dashboard");
+      }
+    });
+  }, []);
+
   return (
     <div className="login-register-app">
       <div className="login-register-form">
@@ -92,6 +105,18 @@ const SignIn = forwardRef(({ ref, changePageFn }) => {
           </button>
         </div>
         <div className="login-register-footer">
+          <div className="login-register-footer-container">
+            <p>Ingelogd blijven</p>
+            <input
+              className="switch"
+              type="checkbox"
+              onChange={(e) => {
+                setKeepLoggedIn(e.target.checked);
+                console.log(e.target.checked);
+              }}
+              checked={keepLoggedIn}
+            />
+          </div>
           <p>Nog geen account?</p>
           <button
             onClick={() => {
