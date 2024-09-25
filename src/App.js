@@ -2,7 +2,7 @@ import React, { useRef, useState } from "react";
 import App from "./Main";
 import SignIn from "./Login";
 import Register from "./Register";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 function MainApp() {
   const [page, setPage] = useState(0);
@@ -16,7 +16,7 @@ function MainApp() {
 
   return (
     <>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route
             index
@@ -28,7 +28,7 @@ function MainApp() {
             element={<Register ref={registerRef} changePageFn={changePage} />}
           />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </>
   );
 }
